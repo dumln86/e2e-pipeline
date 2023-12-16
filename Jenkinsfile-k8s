@@ -37,8 +37,8 @@ pipeline {
     }
 
     stage('Deploying React.js container to Kubernetes') {
-      withKubeConfig() {
-        script {
+      step {
+        withKubeConfig() {
           sh 'kubectl apply -f deployment.yaml'
         }
       }
