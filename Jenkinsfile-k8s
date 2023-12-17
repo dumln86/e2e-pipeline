@@ -59,7 +59,6 @@ pipeline {
               sh 'chmod +x kubectl'
               sh 'ls -la'
               sh 'pwd'
-              sh './kubectl config set-context --current --namespace=devops-tools'
               sh './kubectl apply -f deployment.yaml'
             }
         }
