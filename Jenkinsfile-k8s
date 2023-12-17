@@ -60,7 +60,7 @@ pipeline {
               sh "mv kubectl ${KUBECTL_PATH}"
 
               sh "${KUBECTL_PATH} kubectl config use-context ${KUBE_NAMESPACE}"
-              sh "${KUBECTL_PATH} kubectl apply - f deployment.yaml"
+              sh "${KUBECTL_PATH} kubectl apply -f deployment.yaml"
             }
         }
       }
