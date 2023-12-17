@@ -57,7 +57,7 @@ pipeline {
             withKubeConfig() {
               sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"'
               sh 'chmod +x kubectl'
-              sh "mv kubectl ${JENKINS_HOME}"
+              sh "sudo mv kubectl ${JENKINS_HOME}"
 
               sh "${KUBECTL_PATH} config use-context ${KUBE_NAMESPACE}"
               sh "${KUBECTL_PATH} apply -f deployment.yaml"
