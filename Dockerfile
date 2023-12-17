@@ -1,2 +1,4 @@
-FROM ubuntu
-ENTRYPOINT ["/bin/bash", "-c", "echo eeeeeeeee"]
+FROM node:7
+ADD app.js /app.js
+ENTRYPOINT ["node", "app.js"]
+
