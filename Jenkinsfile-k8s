@@ -45,7 +45,7 @@ pipeline {
             curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.27.5/bin/linux/amd64/kubectl
             chmod +x kubectl
             kubectl version --client
-            pwd
+            echo `pwd`
         '''
       }
     }
@@ -55,7 +55,7 @@ pipeline {
         script {
             withKubeConfig() {
               sh '''
-                pwd
+                echo `pwd`
                 kubectl apply -f deployment.yaml
                 '''
             }
