@@ -40,15 +40,12 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-          // Deploy to Kubernetes using the Kubernetes plugin
-          script {
-            kubernetesDeploy(
-              //kubeconfigId: "${KUBE_CREDENTIALS_ID}",
-              configs: 'deployment.yaml',
-              kubeNamespace: "${KUBE_NAMESPACE}",
-              secretName: 'dockercred'
-            )
-          }
+        // Deploy to Kubernetes using the Kubernetes plugin
+        script {
+            withKubeConfig() {
+            sh 'kubectl apply -f my-kubernetes-directory'
+            }
+        }
       }
     }
   }
