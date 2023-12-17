@@ -54,11 +54,12 @@ pipeline {
         // Deploy to Kubernetes using the Kubernetes plugin
         script {
             withKubeConfig() {
-              sh '''
-                curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.2/bin/darwin/amd64/kubectl
-                chmod +x ./kubectl
-                ./kubectl apply -f deployment.yaml
-                '''
+              sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"'
+              sh 'chmod +x kubectl'
+              sh 'mv kubectl /usr/local/bin/'
+
+              sh "kubectl config use-context ${KUBE_NAMESPACE}"
+              kubectl apply - f deployment.yaml
             }
         }
       }
