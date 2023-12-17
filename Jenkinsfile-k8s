@@ -45,18 +45,8 @@ pipeline {
             kubernetesDeploy(
               //kubeconfigId: "${KUBE_CREDENTIALS_ID}",
               configs: 'deployment.yaml',
-              enableConfigSubstitution: true,
               kubeNamespace: "${KUBE_NAMESPACE}",
-              secretName: 'dockercred',
-              containers: [
-                  containerTemplate(
-                      name: "${APP_NAME}",
-                      image: "${IMAGE_NAME}",
-                      ports: [
-                          containerPort(name: 'http', containerPort: 80)
-                      ]
-                  )
-              ]
+              secretName: 'dockercred'
             )
           }
       }
