@@ -18,25 +18,25 @@ pipeline {
   }
 
   stages {
-    stage('Cleanup Workspace') {
-      steps {
-        cleanWs()
-      }
-    }
+    // stage('Cleanup Workspace') {
+    //   steps {
+    //     cleanWs()
+    //   }
+    // }
 
-    stage('Checkout from SCM') {
-      steps {
-        git branch: 'main', credentialsId: 'github', url: 'https://github.com/dumln86/e2e-pipeline'
-      }
-    }
+    // stage('Checkout from SCM') {
+    //   steps {
+    //     git branch: 'main', credentialsId: 'github', url: 'https://github.com/dumln86/e2e-pipeline'
+    //   }
+    // }
 
-    stage('Build & Push with Kaniko') {
-      steps {
-        container(name: 'kaniko', shell: '/busybox/sh') {
-          sh '''/kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --destination=${IMAGE_NAME}:${IMAGE_TAG} --destination=${IMAGE_NAME}:latest'''
-        }
-      }
-    }
+    // stage('Build & Push with Kaniko') {
+    //   steps {
+    //     container(name: 'kaniko', shell: '/busybox/sh') {
+    //       sh '''/kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --destination=${IMAGE_NAME}:${IMAGE_TAG} --destination=${IMAGE_NAME}:latest'''
+    //     }
+    //   }
+    // }
     stage('Install kubectl excuter') {
       steps {
         sh '''
@@ -45,6 +45,7 @@ pipeline {
             curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.27.5/bin/linux/amd64/kubectl
             chmod +x kubectl
             kubectl version --client
+            pwd
         '''
       }
     }
@@ -53,7 +54,10 @@ pipeline {
         // Deploy to Kubernetes using the Kubernetes plugin
         script {
             withKubeConfig() {
-            sh 'kubectl apply -f my-kubernetes-directory'
+              sh '''
+                pwd
+                kubectl apply -f deployment.yaml
+                '''
             }
         }
       }
