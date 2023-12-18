@@ -12,6 +12,7 @@ spec:
       labels:
         app: hello
     spec:
+      serviceAccountName: app1-staging-deployment
       containers:
       - name: hello-world
         image: dumln86/e2e-pipeline:latest
