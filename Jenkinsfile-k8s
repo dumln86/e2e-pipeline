@@ -38,18 +38,6 @@ pipeline {
         }
       }
     }
-    stage('Install kubectl excuter') {
-      steps {
-        sh '''
-            mkdir -p .bin
-            cd .bin
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.27.5/bin/linux/amd64/kubectl
-            chmod +x kubectl
-            kubectl version --client
-            echo `pwd`
-        '''
-      }
-    }
     stage('Deploy to Kubernetes') {
       agent {
         label 'kubeagent'
