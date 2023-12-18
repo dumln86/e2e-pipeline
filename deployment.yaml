@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: hello-world
 spec:
+  serviceAccountName: jenkins-admin 
   selector:
     matchLabels:
       app: hello 
