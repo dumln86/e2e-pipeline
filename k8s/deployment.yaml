@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello-world
+  namespace: app1-staging
 spec:
   selector:
     matchLabels:
@@ -12,7 +13,6 @@ spec:
       labels:
         app: hello
     spec:
-      serviceAccountName: app1-staging-deployment
       containers:
       - name: hello-world
         image: dumln86/e2e-pipeline:latest
