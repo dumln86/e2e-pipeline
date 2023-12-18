@@ -62,6 +62,7 @@ pipeline {
               sh 'chmod +x kubectl'
               sh 'ls -la'
               sh 'pwd'
+              sh 'cat deployment.yaml'
               sh './kubectl apply -f deployment.yaml'
             }
         }
