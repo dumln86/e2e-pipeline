@@ -51,6 +51,9 @@ pipeline {
     //   }
     // }
     stage('Deploy to Kubernetes') {
+      agent {
+        label 'kube-agent'
+      }
       steps {
         // Deploy to Kubernetes using the Kubernetes plugin
         script {
