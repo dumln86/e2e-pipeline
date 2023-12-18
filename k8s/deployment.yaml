@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: dumln86/e2e-pipeline:latest
+        image: dumln86/e2e-pipeline:${IMAGE_TAG}
