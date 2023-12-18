@@ -63,6 +63,7 @@ pipeline {
               sh 'ls -la'
               sh 'pwd'
               sh 'cat deployment.yaml'
+              sh './kubectl get pod'
               sh './kubectl apply -f deployment.yaml'
             }
         }
