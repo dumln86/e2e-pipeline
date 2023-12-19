@@ -34,7 +34,7 @@ pipeline {
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh 'cd `pwd`/${APP_PATH}'
-          sh '/kaniko/executor --dockerfile Dockerfile --context ./ --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+          sh '/kaniko/executor --dockerfile `pwd`/${APP_PATH} Dockerfile --context `pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
         }
       }
     }
@@ -49,6 +49,7 @@ pipeline {
               sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"'
               sh 'chmod +x kubectl'
               sh 'pwd'
+              sh 'cd ${APP_PATH}'
               sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
               sh './kubectl apply -f k8s'
             }
