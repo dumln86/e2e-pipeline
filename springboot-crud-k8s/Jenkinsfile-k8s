@@ -34,7 +34,7 @@ pipeline {
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh 'cd `pwd`/${APP_PATH}'
-          sh '/kaniko/executor --dockerfile `pwd`/${APP_PATH} Dockerfile --context `pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+          sh '/kaniko/executor --dockerfile `pwd`/${APP_PATH}/Dockerfile --context `pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
         }
       }
     }
