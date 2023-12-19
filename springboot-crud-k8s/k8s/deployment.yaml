@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-crud-k8s
+  namespace: app1-staging
+spec:
+  selector:
+    matchLabels:
+      app: springboot-crud-k8s 
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: springboot-crud-k8s
+    spec:
+      containers:
+      - name: springboot-crud-k8s
+        image: dumln86/springboot-crud-k8s:__IMAGE_TAG__

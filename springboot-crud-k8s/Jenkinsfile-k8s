@@ -1,0 +1,68 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'kaniko-builder.yaml'
+    }
+  }
+  environment {
+    KUBE_NAMESPACE = 'devops-tools'
+    APP_NAME = 'springboot-crud-k8s'
+    APP_PATH = 'springboot-crud-k8s'
+    RELEASE = '1.0.0'
+    DOCKER_USER = 'dumln86'
+    DOCKER_PASS = 'dockerhub'
+    IMAGE_NAME = "${DOCKER_USER}" + '/' + "${APP_NAME}"
+    IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+    KUBECTL_PATH = "${JENKINS_HOME}/kubectl"
+    /* JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN") */
+  }
+
+  stages {
+    stage('Cleanup Workspace') {
+      steps {
+        cleanWs()
+      }
+    }
+
+    stage('Checkout from SCM') {
+      steps {
+        git branch: 'main', credentialsId: 'github', url: 'https://github.com/dumln86/e2e-pipeline'
+      }
+    }
+
+    stage('Build & Push with Kaniko') {
+      steps {
+        container(name: 'kaniko', shell: '/busybox/sh') {
+          sh 'cd `pwd`/${APP_PATH}'
+          sh '/kaniko/executor --dockerfile Dockerfile --context ./ --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+        }
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      agent {
+        label 'kubeagent'
+      }
+      steps {
+        // Deploy to Kubernetes using the Kubernetes plugin
+        script {
+            withKubeConfig() {
+              sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"'
+              sh 'chmod +x kubectl'
+              sh 'pwd'
+              sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
+              sh './kubectl apply -f k8s'
+            }
+        }
+      }
+    }
+  }
+
+      post {
+        success {
+      echo 'Deployment successful!'
+        }
+        failure {
+      echo 'Deployment failed!'
+        }
+      }
+}
