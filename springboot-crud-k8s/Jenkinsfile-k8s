@@ -1,9 +1,5 @@
 pipeline {
-  agent {
-    kubernetes {
-      yamlFile 'kaniko-builder.yaml'
-    }
-  }
+  agent any
   environment {
     KUBE_NAMESPACE = 'devops-tools'
     APP_NAME = 'springboot-crud-k8s'
@@ -32,7 +28,10 @@ pipeline {
 
     stage('Build Maven project') {
       agent {
-        label 'kubeagent'
+        docker {
+            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
       }
       steps {
         sh 'mvn clean install'
@@ -40,6 +39,11 @@ pipeline {
     }
 
     stage('Build & Push docker image with Kaniko') {
+      agent {
+        kubernetes {
+          yamlFile 'kaniko-builder.yaml'
+        }
+      }
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh 'cd `pwd`/${APP_PATH}'
