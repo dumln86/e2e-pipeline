@@ -30,7 +30,13 @@ pipeline {
       }
     }
 
-    stage('Build & Push with Kaniko') {
+    stage('Build Maven project') {
+      steps {
+        sh 'mvn clean install'
+      }
+    }
+
+    stage('Build & Push docker image with Kaniko') {
       steps {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh 'cd `pwd`/${APP_PATH}'
