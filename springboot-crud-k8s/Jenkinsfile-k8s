@@ -1,6 +1,8 @@
 pipeline {
-  kubernetes {
-    yamlFile 'kaniko-builder.yaml'
+  agent {
+    kubernetes {
+      yamlFile 'kaniko-builder.yaml'
+    }
   }
   environment {
     APP_NAME = 'springboot-crud-k8s'
