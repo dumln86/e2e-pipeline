@@ -10,7 +10,7 @@ environment {
   podTemplate(yaml: readTrusted('kaniko-builder.yaml')) {
     node(POD_LABEL) {
       stage('Get Maven project') {
-        git url: 'https://github.com/dumln86/e2e-pipeline', branch: main
+        git url: 'https://github.com/dumln86/e2e-pipeline', branch: 'main'
         stage('Build Maven project') {
             sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
         }
