@@ -7,15 +7,16 @@ pipeline {
         kind: Pod
         metadata:
           labels:
-            some-label: some-label-value
+            label: jnlp
         spec:
           serviceAccount: jenkins-admin
           containers:
           - name: jnlp
             image: dumln86/jenkins-agent:1.0.5
             command:
-            - cat
-            tty: true
+            - sleep
+            args:
+            - 9999999
             volumeMounts:
               - name: kaniko-secret
                 mountPath: /kaniko/.docker
