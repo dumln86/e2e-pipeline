@@ -9,22 +9,25 @@ environment {
 }
   podTemplate(yaml: readTrusted('kaniko-builder.yaml')) {
     node(POD_LABEL) {
-      stage('Get Maven project') {
-        git url: 'https://github.com/dumln86/e2e-pipeline', branch: 'main'
-        stage('Build Maven project') {
-            sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
+      container('jnlp') {
+        stage('Get Maven project') {
+          git url: 'https://github.com/dumln86/e2e-pipeline', branch: 'main'
+
+          stage('Build Maven project') {
+              sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
+          }
+        }
+        stage('Build & Push docker image with Kaniko') {
+          sh 'ls -la `pwd`/${APP_PATH}'
+          sh '/kaniko/executor --dockerfile=`pwd`/${APP_PATH}/Dockerfile --context=`pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+        }
+        stage('Deploy to Kubernetes') {
+          // Deploy to Kubernetes using the Kubernetes plugin
+          sh 'pwd'
+          sh 'cd ${APP_PATH}'
+          sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
+          sh 'kubectl apply -f k8s'
         }
       }
-      stage('Build & Push docker image with Kaniko') {
-        sh 'ls -la `pwd`/${APP_PATH}'
-        sh '/kaniko/executor --dockerfile=`pwd`/${APP_PATH}/Dockerfile --context=`pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
-      }
-      stage('Deploy to Kubernetes') {
-        // Deploy to Kubernetes using the Kubernetes plugin
-        sh 'pwd'
-        sh 'cd ${APP_PATH}'
-        sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
-        sh 'kubectl apply -f k8s'
-      }
-      }
     }
+  }
