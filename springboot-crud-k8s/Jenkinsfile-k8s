@@ -26,6 +26,11 @@ pipeline {
                     items:
                     - key: .dockerconfigjson
                       path: config.json
+          - name: busybox
+            image: busybox
+            command:
+            - cat
+            tty: true
         '''
       retries 2
     }
