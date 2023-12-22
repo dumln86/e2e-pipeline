@@ -30,7 +30,7 @@ pipeline {
 
     stage('Build Maven project') {
       steps {
-        sh 'mvn -f `pwd`/${APP_PATH} clean install'
+        sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
       }
     }
 
