@@ -9,9 +9,14 @@ spec:
     command:
     - sleep
     args:
-    - 99d
+    - 9999999
+    volumeMounts:
+      - name: kaniko-secret
+        mountPath: /kaniko/.docker
   volumes:
       - name: kaniko-secret
-        secretVolume:
-          secretName: dockercred
-          mountPath: /kaniko/.docker
+        secret:
+            secretName: dockercred
+            items:
+            - key: .dockerconfigjson
+              path: config.json
