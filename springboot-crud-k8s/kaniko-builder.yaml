@@ -1,8 +1,9 @@
 kind: Pod
 spec:
+  serviceAccountName: jenkins-admin
   containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug
+  - name: jenkinsagent
+    image: dumln86/jenkins-agent:1.0.5
     imagePullPolicy: Always
     command:
     - sleep

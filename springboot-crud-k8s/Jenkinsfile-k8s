@@ -1,9 +1,8 @@
 pipeline {
-  agent {
-    label 'jenkinsagent'
+  kubernetes {
+    yamlFile 'kaniko-builder.yaml'
   }
   environment {
-    KUBE_NAMESPACE = 'devops-tools'
     APP_NAME = 'springboot-crud-k8s'
     APP_PATH = 'springboot-crud-k8s'
     RELEASE = '1.0.0'
@@ -11,8 +10,6 @@ pipeline {
     DOCKER_PASS = 'dockerhub'
     IMAGE_NAME = "${DOCKER_USER}" + '/' + "${APP_NAME}"
     IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-    KUBECTL_PATH = "${JENKINS_HOME}/kubectl"
-    /* JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN") */
   }
 
   stages {
@@ -46,7 +43,7 @@ pipeline {
         sh 'pwd'
         sh 'cd ${APP_PATH}'
         sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
-        sh './kubectl apply -f k8s'
+        sh 'kubectl apply -f k8s'
       }
     }
   }
