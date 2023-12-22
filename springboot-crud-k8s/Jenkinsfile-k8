@@ -7,7 +7,9 @@ environment {
     IMAGE_NAME = "${DOCKER_USER}" + '/' + "${APP_NAME}"
     IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 }
-  podTemplate(yaml: readTrusted('springboot-crud-k8s/kaniko-builder.yaml')) {
+  podTemplate(containers: [
+    containerTemplate(name: 'jnlp', image: 'dumln86/jenkins-agent:1.0.5', command: 'sleep', args: '99d'),
+  ]) {
     node(POD_LABEL) {
       container('jnlp') {
         stage('Get Maven project') {
