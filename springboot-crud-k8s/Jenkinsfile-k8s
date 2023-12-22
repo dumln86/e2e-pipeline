@@ -1,4 +1,9 @@
-environment {
+pipeline {
+  agent {
+    label 'jenkinsagent'
+  }
+  environment {
+    KUBE_NAMESPACE = 'devops-tools'
     APP_NAME = 'springboot-crud-k8s'
     APP_PATH = 'springboot-crud-k8s'
     RELEASE = '1.0.0'
@@ -6,50 +11,52 @@ environment {
     DOCKER_PASS = 'dockerhub'
     IMAGE_NAME = "${DOCKER_USER}" + '/' + "${APP_NAME}"
     IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-}
-  podTemplate(yaml: readTrusted('kaniko-builder.yaml')) {
-    node(POD_LABEL) {
-        stage('Cleanup Workspace') {
-          steps {
-            cleanWs()
-          }
-        }
+    KUBECTL_PATH = "${JENKINS_HOME}/kubectl"
+    /* JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN") */
+  }
 
-        stage('Checkout from SCM') {
-          steps {
-            git branch: 'main', credentialsId: 'github', url: 'https://github.com/dumln86/e2e-pipeline'
-          }
-        }
-
-        stage('Build Maven project') {
-          steps {
-            sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
-          }
-        }
-
-        stage('Build & Push docker image with Kaniko') {
-          steps {
-            sh 'ls -la `pwd`/${APP_PATH}'
-            sh '/kaniko/executor --dockerfile=`pwd`/${APP_PATH}/Dockerfile --context=`pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
-          }
-        }
-        stage('Deploy to Kubernetes') {
-          steps {
-            // Deploy to Kubernetes using the Kubernetes plugin
-            sh 'pwd'
-            sh 'cd ${APP_PATH}'
-            sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
-            sh 'kubectl apply -f k8s'
-          }
-        }
+  stages {
+    stage('Cleanup Workspace') {
+      steps {
+        cleanWs()
       }
+    }
+
+    stage('Checkout from SCM') {
+      steps {
+        git branch: 'main', credentialsId: 'github', url: 'https://github.com/dumln86/e2e-pipeline'
+      }
+    }
+
+    stage('Build Maven project') {
+      steps {
+        sh 'mvn -f `pwd`/${APP_PATH} clean install -DskipTests'
+      }
+    }
+
+    stage('Build & Push docker image with Kaniko') {
+      steps {
+        sh 'ls -la `pwd`/${APP_PATH}'
+        sh '/kaniko/executor --dockerfile=`pwd`/${APP_PATH}/Dockerfile --context=`pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        // Deploy to Kubernetes using the Kubernetes plugin
+        sh 'pwd'
+        sh 'cd ${APP_PATH}'
+        sh 'sed -i "s/__IMAGE_TAG__/${IMAGE_TAG}/g" k8s/deployment.yaml'
+        sh 'kubectl apply -f k8s'
+      }
+    }
+  }
 
       post {
         success {
-          echo 'Deployment successful!'
+      echo 'Deployment successful!'
         }
         failure {
-          echo 'Deployment failed!'
+      echo 'Deployment failed!'
         }
       }
-    }
+}
