@@ -1,5 +1,3 @@
-pipeline {
-  agent any
   environment {
     APP_NAME = 'springboot-crud-k8s'
     APP_PATH = 'springboot-crud-k8s'
