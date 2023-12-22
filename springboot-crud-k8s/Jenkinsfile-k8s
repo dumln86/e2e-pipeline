@@ -9,7 +9,6 @@ environment {
 }
   podTemplate(yaml: readTrusted('kaniko-builder.yaml')) {
     node(POD_LABEL) {
-      stages {
         stage('Cleanup Workspace') {
           steps {
             cleanWs()
@@ -54,4 +53,3 @@ environment {
         }
       }
     }
-  }
