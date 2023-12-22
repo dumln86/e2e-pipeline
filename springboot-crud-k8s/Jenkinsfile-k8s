@@ -9,8 +9,6 @@ pipeline {
         containers:
         - name: jenkins-agent
           image: dumln86/jenkins-agent:1.0.4
-          command:
-          - cat
       '''
     }
   }
