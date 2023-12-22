@@ -37,7 +37,7 @@ pipeline {
     stage('Build & Push docker image with Kaniko') {
       steps {
         sh 'cd `pwd`/${APP_PATH}'
-        sh '/kaniko/executor --dockerfile `pwd`/${APP_PATH}/Dockerfile --context `pwd`/${APP_PATH} --destination=${IMAGE_NAME}:${IMAGE_TAG}'
+        sh '/kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --destination=${IMAGE_NAME}:${IMAGE_TAG}'
       }
     }
     stage('Deploy to Kubernetes') {
