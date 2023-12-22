@@ -14,9 +14,8 @@ pipeline {
           - name: jnlp
             image: dumln86/jenkins-agent:1.0.5
             command:
-            - sleep
-            args:
-            - 9999999
+            - cat
+            tty: true
             volumeMounts:
               - name: kaniko-secret
                 mountPath: /kaniko/.docker
