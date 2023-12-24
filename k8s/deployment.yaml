@@ -16,3 +16,4 @@ spec:
       containers:
       - name: hello-world
         image: dumln86/e2e-pipeline:__IMAGE_TAG__
+        

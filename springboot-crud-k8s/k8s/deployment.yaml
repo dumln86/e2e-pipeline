@@ -16,3 +16,29 @@ spec:
       containers:
       - name: springboot-crud-k8s
         image: dumln86/springboot-crud-k8s:__IMAGE_TAG__
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                  name: app-config
+                  key: DB_HOST
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                  name: app-config
+                  key: DB_NAME
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                  name: app-config
+                  key: DB_HOST
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                  name: app-secrets
+                  key: DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                  name: app-secrets
+                  key: DB_PASSWORD
