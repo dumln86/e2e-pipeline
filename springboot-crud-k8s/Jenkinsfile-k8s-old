@@ -1,6 +1,39 @@
 pipeline {
   agent {
-    label 'jenkinsagent'
+    kubernetes {
+      defaultContainer 'agent'
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            label: jnlp
+        spec:
+          serviceAccount: jenkins-admin
+          containers:
+          - name: agent
+            image: dumln86/jenkins-agent:1.0.5
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+              - name: kaniko-secret
+                mountPath: /kaniko/.docker
+          volumes:
+              - name: kaniko-secret
+                secret:
+                    secretName: dockercred
+                    items:
+                    - key: .dockerconfigjson
+                      path: config.json
+          - name: busybox
+            image: busybox
+            command:
+            - cat
+            tty: true
+        '''
+      retries 2
+    }
   }
   environment {
     KUBE_NAMESPACE = 'devops-tools'
